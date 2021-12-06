@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/jung-kurt/gofpdf"
 	"io/ioutil"
 	"path/filepath"
 	"time"
+
+	"github.com/jung-kurt/gofpdf"
 )
 
 type Document struct {
@@ -28,6 +29,21 @@ func main() {
 	doc.pdf.SetMargins(20, 40, 20)
 	doc.pdf.SetTitle(mainTitle, false)
 	doc.pdf.SetAuthor("obaldan", true)
+	jsonFileBytes, _ := ioutil.ReadFile("./font/bookman-old-style.json")
+	zFileBytes, _ := ioutil.ReadFile("./font/bookman-old-style.z")
+	doc.pdf.AddFontFromBytes("Bookman", "", jsonFileBytes, zFileBytes)
+
+	jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold.json")
+	zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold.z")
+	doc.pdf.AddFontFromBytes("Bookman", "B", jsonFileBytes, zFileBytes)
+
+	jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-italic.json")
+	zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-italic.z")
+	doc.pdf.AddFontFromBytes("Bookman", "I", jsonFileBytes, zFileBytes)
+
+	jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold-italic.json")
+	zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold-italic.z")
+	doc.pdf.AddFontFromBytes("Bookman", "BI", jsonFileBytes, zFileBytes)
 
 	doc.buildFooter()
 	printChapter := func(chapNum int, titleStr, fileStr string, addPage bool) {
@@ -55,7 +71,7 @@ func (d *Document) buildBody(fileStr string) {
 	if err != nil {
 		d.pdf.SetError(err)
 	}
-	d.pdf.SetFont("Arial", "", 12)
+	d.pdf.SetFont("Bookman", "", 12)
 	// Output justified text
 	d.pdf.MultiCell(0, 5, d.translator(string(txtStr)), "", "", false)
 	// Line break
@@ -64,8 +80,8 @@ func (d *Document) buildBody(fileStr string) {
 
 func (d *Document) buildClause(clauseNumber int) {
 	clause := fmt.Sprintf("Clause %d:", clauseNumber)
-	// Arial 12
-	d.pdf.SetFont("Arial", "B", 12)
+	// Bookman 12
+	d.pdf.SetFont("Bookman", "B", 12)
 	// Title
 	d.pdf.CellFormat(0, 6, d.translator(clause),
 		"", 1, "L", false, 0, "")
@@ -74,8 +90,8 @@ func (d *Document) buildClause(clauseNumber int) {
 }
 
 func (d *Document) buildAreaTitle(titleStr string) {
-	// 	// Arial 12
-	d.pdf.SetFont("Arial", "B", 12)
+	// 	// Bookman 12
+	d.pdf.SetFont("Bookman", "B", 12)
 	// Title
 	d.pdf.CellFormat(0, 6, d.translator(titleStr),
 		"", 1, "L", false, 0, "")
@@ -87,8 +103,8 @@ func (d *Document) buildFooter() {
 	d.pdf.SetFooterFunc(func() {
 		// Position at 1.5 cm from bottom
 		d.pdf.SetY(-15)
-		// Arial italic 8
-		d.pdf.SetFont("Arial", "I", 8)
+		// Bookman italic 8
+		d.pdf.SetFont("Bookman", "I", 8)
 		// Text color in gray
 		d.pdf.SetTextColor(128, 128, 128)
 		// Page number
@@ -98,8 +114,8 @@ func (d *Document) buildFooter() {
 }
 
 func (d *Document) buildTitle(titleStr string) {
-	// 	// Arial 12
-	d.pdf.SetFont("Arial", "B", 14)
+	// 	// Bookman 12
+	d.pdf.SetFont("Bookman", "B", 14)
 	// Title
 	d.pdf.CellFormat(0, 9, d.translator(titleStr),
 		"", 1, "C", false, 0, "")
@@ -109,8 +125,8 @@ func (d *Document) buildTitle(titleStr string) {
 
 func (d *Document) buildHeader(titleStr string) {
 	d.pdf.SetHeaderFunc(func() {
-		// Arial bold 15
-		d.pdf.SetFont("Arial", "B", 14)
+		// Bookman bold 15
+		d.pdf.SetFont("Bookman", "B", 14)
 		// Calculate width of title and position
 		wd := d.pdf.GetStringWidth(titleStr) + 6
 		d.pdf.SetX((210 - wd) / 2)
