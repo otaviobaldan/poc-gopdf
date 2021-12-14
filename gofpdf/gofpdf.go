@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/jung-kurt/gofpdf"
@@ -93,8 +94,20 @@ func (d *Document) buildBody(fileStr string) {
 		d.pdf.SetError(err)
 	}
 	d.pdf.SetFont("Bookman", "", 12)
+
 	// Output justified text
-	d.pdf.MultiCell(0.0, 18.0, string(txtStr), "", "J", false)
+	d.pdf.MultiCell(0.0, 18.0, strings.ReplaceAll(string(txtStr), `\n`, "\n"), "", "J", false)
+	// Line break
+	d.pdf.Ln(-1)
+}
+
+func (d *Document) buildText(txt string) {
+	d.pdf.SetFont("Bookman", "", 12)
+
+	txt = strings.ReplaceAll(txt, `\n`, "\n")
+
+	// Output justified text
+	d.pdf.MultiCell(0.0, 18.0, txt, "", "J", false)
 	// Line break
 	d.pdf.Ln(-1)
 }
@@ -166,21 +179,21 @@ func (d *Document) buildHeader(titleStr string) {
 }
 
 func (d *Document) registerFonts() {
-	//jsonFileBytes, _ := ioutil.ReadFile("./font/bookman-old-style.json")
-	//zFileBytes, _ := ioutil.ReadFile("./font/bookman-old-style.z")
-	//d.pdf.AddFontFromBytes("Bookman", "", jsonFileBytes, zFileBytes)
+	//	jsonFileBytes, _ := ioutil.ReadFile("./font/bookman-old-style.json")
+	//	zFileBytes, _ := ioutil.ReadFile("./font/bookman-old-style.z")
+	//	d.pdf.AddFontFromBytes("Bookman", "", jsonFileBytes, zFileBytes)
 	//
-	//jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold.json")
-	//zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold.z")
-	//d.pdf.AddFontFromBytes("Bookman", "B", jsonFileBytes, zFileBytes)
+	//	jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold.json")
+	//	zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold.z")
+	//	d.pdf.AddFontFromBytes("Bookman", "B", jsonFileBytes, zFileBytes)
 	//
-	//jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-italic.json")
-	//zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-italic.z")
-	//d.pdf.AddFontFromBytes("Bookman", "I", jsonFileBytes, zFileBytes)
+	//	jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-italic.json")
+	//	zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-italic.z")
+	//	d.pdf.AddFontFromBytes("Bookman", "I", jsonFileBytes, zFileBytes)
 	//
-	//jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold-italic.json")
-	//zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold-italic.z")
-	//d.pdf.AddFontFromBytes("Bookman", "BI", jsonFileBytes, zFileBytes)
+	//	jsonFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold-italic.json")
+	//	zFileBytes, _ = ioutil.ReadFile("./font/bookman-old-style-bold-italic.z")
+	//	d.pdf.AddFontFromBytes("Bookman", "BI", jsonFileBytes, zFileBytes)
 
 	d.pdf.AddUTF8Font("Bookman", "", "./font/bookman-old-style.ttf")
 	d.pdf.AddUTF8Font("Bookman", "B", "./font/bookman-old-style-bold.ttf")

@@ -70,8 +70,11 @@ func main() {
 	pdf.GenerateTitle("LERO LERO DE TI")
 
 	pdf.GenerateSubtitle("CHAPTER 1")
+	// same line to test replace line break
 	bytes, _ := ioutil.ReadFile("./text/parte1.txt")
-	pdf.GenerateText(string(bytes))
+	convertedString := string(bytes)
+
+	pdf.GenerateText(convertedString)
 
 	pdf.GenerateSubtitle("CHAPTER 2")
 	bytes, _ = ioutil.ReadFile("./text/parte2.txt")
